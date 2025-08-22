@@ -21,12 +21,12 @@ public class Employee {
     private Department department;
 
     public Employee(Department department, boolean active, String gender, String email, String phoneNumber, String name) {
-        this.department = department;
-        this.active = active;
-        this.gender = gender;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
         this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.department = department;
+        this.gender = gender;
+        this.active = active;
     }
 
     public Long getId() {
