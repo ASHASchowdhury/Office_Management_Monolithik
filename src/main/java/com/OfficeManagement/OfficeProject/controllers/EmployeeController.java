@@ -20,10 +20,7 @@ public class EmployeeController {
 
     @PostMapping
     public Employee createEmployee(@RequestBody Employee employee){
-        Department dept = departmentRepository.findBy(employee.getDepartment().getName())
-                .orElseThrow(() -> new RuntimeException("Department not found"));
 
-        employee.setDepartment(dept);
         return employeeService.saveEmployee(employee);
     }
 

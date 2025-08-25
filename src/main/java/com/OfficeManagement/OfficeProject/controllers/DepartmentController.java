@@ -30,7 +30,7 @@ public class DepartmentController {
         return departmentService.getAllDepartment();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void deleteDepartment(@PathVariable Long id){
         departmentService.deleteDepartment(id);
     }

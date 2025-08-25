@@ -1,5 +1,6 @@
 package com.OfficeManagement.OfficeProject.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,6 +19,7 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn( name = "department_id", nullable = false)
+    @JsonBackReference
     private Department department;
 
     public Employee(Department department, boolean active, String gender, String email, String phoneNumber, String name) {
@@ -29,6 +31,9 @@ public class Employee {
         this.active = active;
     }
 
+    public Employee(){
+
+    }
     public Long getId() {
         return id;
     }
