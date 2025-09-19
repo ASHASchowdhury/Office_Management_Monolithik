@@ -1,5 +1,6 @@
 package com.OfficeManagement.OfficeProject.controllers;
 
+import com.OfficeManagement.OfficeProject.dtos.EmployeeDTO;
 import com.OfficeManagement.OfficeProject.models.Department;
 import com.OfficeManagement.OfficeProject.models.Employee;
 import com.OfficeManagement.OfficeProject.repository.DepartmentRepository;
@@ -10,33 +11,37 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EmployeeController {
 
     private  final EmployeeService employeeService;
     private DepartmentRepository departmentRepository;
     public EmployeeController(EmployeeService employeeService) {
+
         this.employeeService = employeeService;
     }
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee){
+    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO){
 
-        return employeeService.saveEmployee(employee);
+        return employeeService.saveEmployee(employeeDTO);
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployee(@PathVariable Long id){
+    public EmployeeDTO getEmployeeById(@PathVariable Long id){
+
         return employeeService.getEmployeeById(id);
     }
 
     @GetMapping
-    public List<Employee> getAllEmployee(){
+    public List<EmployeeDTO> getAllEmployee(){
+
         return employeeService.getAllEmployee();
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee){
-        return employeeService.updateEmployee(id,employee);
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO){
+        return employeeService.updateEmployee(id,employeeDTO);
     }
 
     @DeleteMapping("/{id}")

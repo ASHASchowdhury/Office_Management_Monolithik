@@ -1,46 +1,25 @@
-package com.OfficeManagement.OfficeProject.models;
+package com.OfficeManagement.OfficeProject.dtos;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+public class EmployeeDTO {
 
-@Entity
-@Table(name = "employees")
-
-public class Employee {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String phoneNumber;
     private String email;
     private String gender;
     private boolean active;
+    private DepartmentDTO departmentDTO;
 
-    @ManyToOne
-    @JoinColumn( name = "department_id", nullable = false)
-    @JsonIgnoreProperties("employee")
-    private Department department;
+    public EmployeeDTO(){};
 
-    public Employee(Department department, boolean active, String gender, String email, String phoneNumber, String name) {
+    public EmployeeDTO(Long id, String name, String phoneNumber, String email, String gender, boolean active, DepartmentDTO departmentDTO) {
+        this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.department = department;
         this.gender = gender;
         this.active = active;
-    }
-
-    public Employee(){
-
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.departmentDTO = departmentDTO;
     }
 
     public String getName() {
@@ -49,6 +28,14 @@ public class Employee {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPhoneNumber() {
@@ -83,11 +70,12 @@ public class Employee {
         this.active = active;
     }
 
-    public Department getDepartment() {
-        return department;
+    public DepartmentDTO getDepartmentDTO() {
+        return departmentDTO;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentDTO(DepartmentDTO departmentDTO) {
+        this.departmentDTO = departmentDTO;
     }
+
 }
