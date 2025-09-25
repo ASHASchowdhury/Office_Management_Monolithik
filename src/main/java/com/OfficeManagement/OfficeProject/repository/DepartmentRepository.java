@@ -3,6 +3,8 @@ package com.OfficeManagement.OfficeProject.repository;
 import com.OfficeManagement.OfficeProject.models.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DepartmentRepository extends JpaRepository<Department ,Long> {
+import java.util.List;
 
+public interface DepartmentRepository extends JpaRepository<Department ,Long> {
+    List<Department> findAllByOrderById();
 }

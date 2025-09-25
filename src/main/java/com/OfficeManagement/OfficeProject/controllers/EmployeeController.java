@@ -5,6 +5,7 @@ import com.OfficeManagement.OfficeProject.models.Department;
 import com.OfficeManagement.OfficeProject.models.Employee;
 import com.OfficeManagement.OfficeProject.repository.DepartmentRepository;
 import com.OfficeManagement.OfficeProject.services.EmployeeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO){
-
-        return employeeService.saveEmployee(employeeDTO);
+    public ResponseEntity<String> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        try {
+            EmployeeDTO savedEmployee = employeeService.saveEmployee(employeeDTO);
+            return ResponseEntity.ok("Employee created successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
@@ -40,8 +45,13 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO){
-        return employeeService.updateEmployee(id,employeeDTO);
+    public ResponseEntity<String> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        try {
+            EmployeeDTO updatedEmployee = employeeService.updateEmployee(id, employeeDTO);
+            return ResponseEntity.ok("Employee updated successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

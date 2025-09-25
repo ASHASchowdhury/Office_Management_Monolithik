@@ -29,17 +29,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee != null && employee.getDepartment() != null) {
             departmentDTO = new DepartmentDTO(
                     employee.getDepartment().getId(),
-                    employee.getDepartment().getName()
+                    employee.getDepartment().getName(),
+                    employee.getDepartment().getDescription(),
+                    null
             );
         }
 
         return new EmployeeDTO(
                 employee.getId(),
+                employee.getEmpId(),
                 employee.getName(),
                 employee.getPhoneNumber(),
                 employee.getEmail(),
                 employee.getGender(),
                 employee.isActive(),
+                employee.getBloodGroup(),
+                employee.getDateOfBirth(),
                 departmentDTO
         );
     }
@@ -47,11 +52,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     // Convert EmployeeDTO to Employee entity
     private Employee convertToEntity(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
+        employee.setEmpId(employeeDTO.getEmpId());
         employee.setName(employeeDTO.getName());
         employee.setPhoneNumber(employeeDTO.getPhoneNumber());
         employee.setEmail(employeeDTO.getEmail());
         employee.setGender(employeeDTO.getGender());
         employee.setActive(employeeDTO.isActive());
+        employee.setBloodGroup(employeeDTO.getBloodGroup());
+        employee.setDateOfBirth(employeeDTO.getDateOfBirth());
 
         // Map department safely
         if (employeeDTO.getDepartmentDTO() != null && employeeDTO.getDepartmentDTO().getId() != null) {
@@ -65,9 +73,36 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    private String generateEmpId() {
+        try {
+            Long totalEmployees = employeeRepository.count();
+            System.out.println("Total employees count: " + totalEmployees);
+            return String.format("emp-%03d", totalEmployees + 1);
+        } catch (Exception e) {
+            System.out.println("Error in generateEmpId: " + e.getMessage());
+            return "emp-001";
+        }
+    }
+
+
 
     @Override
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
+
+        // ADD THIS VALIDATION:
+        if (employeeRepository.existsByEmail(employeeDTO.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        if (employeeRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber())) {
+            throw new RuntimeException("Phone number already exists");
+        }
+
+        if (employeeDTO.getEmpId() == null || employeeDTO.getEmpId().trim().isEmpty()) {
+            String generatedEmpId = generateEmpId();
+            employeeDTO.setEmpId(generatedEmpId);
+            System.out.println("Generated empId: " + generatedEmpId);
+        }
+
         System.out.println("Creating employee: " + employeeDTO.getName());
         Employee saved = employeeRepository.save(convertToEntity(employeeDTO));
         System.out.println("Employee saved with id: " + saved.getId());
@@ -79,11 +114,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee prsntEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
 
+        // ADD THIS VALIDATION (only if email/phone is being changed):
+        if (!prsntEmployee.getEmail().equals(employeeDTO.getEmail()) &&
+                employeeRepository.existsByEmail(employeeDTO.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+        if (!prsntEmployee.getPhoneNumber().equals(employeeDTO.getPhoneNumber()) &&
+                employeeRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber())) {
+            throw new RuntimeException("Phone number already exists");
+        }
+
         prsntEmployee.setName(employeeDTO.getName());
         prsntEmployee.setPhoneNumber(employeeDTO.getPhoneNumber());
         prsntEmployee.setEmail(employeeDTO.getEmail());
         prsntEmployee.setGender(employeeDTO.getGender());
         prsntEmployee.setActive(employeeDTO.isActive());
+        prsntEmployee.setBloodGroup(employeeDTO.getBloodGroup());
+        prsntEmployee.setDateOfBirth(employeeDTO.getDateOfBirth());
 
         if (employeeDTO.getDepartmentDTO() != null && employeeDTO.getDepartmentDTO().getId() != null) {
             Department dept = departmentRepository.findById(employeeDTO.getDepartmentDTO().getId())
