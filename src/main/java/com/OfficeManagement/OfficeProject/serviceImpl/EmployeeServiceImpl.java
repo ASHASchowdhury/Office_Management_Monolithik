@@ -27,12 +27,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDTO convertToDTO(Employee employee) {
         DepartmentDTO departmentDTO = null;
         if (employee != null && employee.getDepartment() != null) {
-            departmentDTO = new DepartmentDTO(
-                    employee.getDepartment().getId(),
-                    employee.getDepartment().getName(),
-                    employee.getDepartment().getDescription(),
-                    null
-            );
+            Department department =employee.getDepartment();
+
+            departmentDTO = new DepartmentDTO();
+                    departmentDTO.setDeptId(department.getDeptId());
+                    departmentDTO.setName(department.getName());
+                    departmentDTO.setDescription(department.getDescription());
         }
 
         return new EmployeeDTO(

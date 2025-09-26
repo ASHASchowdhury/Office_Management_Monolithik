@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class Department {
 
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -67,8 +68,8 @@ public class Department {
     public String getCreatedBy() { return createdBy; }
     public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
-    public LocalDateTime getCreatedDate() { return createdDate; }
-    public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }
+    public LocalDate getCreatedDate() { return createdDate; }
+    public void setCreatedDate(LocalDate createdDate) { this.createdDate = createdDate; }
 
     public List<Employee> getEmployees() { return employees; }
     public void setEmployees(List<Employee> employees) { this.employees = employees; }

@@ -1,5 +1,6 @@
 package com.OfficeManagement.OfficeProject.dtos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class DepartmentDTO {
     private String name;
     private String description;
     private String createdBy;
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
     private List<String> employeeNames;
 
     // Constructors
@@ -28,7 +29,7 @@ public class DepartmentDTO {
     }
 
     public DepartmentDTO(Long id, String deptId, String name, String description,
-                         String createdBy, LocalDateTime createdDate, List<String> employeeNames) {
+                         String createdBy, LocalDate createdDate, List<String> employeeNames) {
         this.id = id;
         this.deptId = deptId;
         this.name = name;
@@ -54,8 +55,8 @@ public class DepartmentDTO {
     public String getCreatedBy() { return createdBy; }
     public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
-    public LocalDateTime getCreatedDate() { return createdDate; }
-    public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }
+    public LocalDate getCreatedDate() { return createdDate; }
+    public void setCreatedDate(LocalDate createdDate) { this.createdDate = createdDate; }
 
     public List<String> getEmployeeNames() { return employeeNames; }
     public void setEmployeeNames(List<String> employeeNames) { this.employeeNames = employeeNames; }

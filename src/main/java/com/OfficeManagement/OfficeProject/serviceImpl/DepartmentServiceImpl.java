@@ -27,15 +27,16 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .collect(Collectors.toList())
                 : null;
 
-        return new DepartmentDTO(
-                department.getId(),
-                department.getDeptId(),
-                department.getName(),
-                department.getDescription(),
-                department.getCreatedBy(),
-                department.getCreatedDate(),
-                employeeNames
-        );
+        DepartmentDTO dto = new DepartmentDTO();
+        dto.setId(department.getId());
+        dto.setDeptId(department.getDeptId());
+        dto.setName(department.getName());
+        dto.setDescription(department.getDescription());
+        dto.setCreatedBy(department.getCreatedBy());
+        dto.setCreatedDate(department.getCreatedDate());
+        dto.setEmployeeNames(employeeNames);
+
+        return dto;
     }
 
     private Department convertToEntity(DepartmentDTO departmentDTO) {
@@ -65,10 +66,10 @@ public class DepartmentServiceImpl implements DepartmentService {
                 }
             }
 
-            return String.format("dept-%03d", maxNumber + 1);
+            return String.format("Dept-%03d", maxNumber + 1);
 
         } catch (Exception e) {
-            return "dept-001";
+            return "Dept-001";
         }
     }
 
