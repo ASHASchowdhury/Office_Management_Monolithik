@@ -1,12 +1,13 @@
-package com.OfficeManagement.OfficeProject.serviceImpl;
+// File: src/main/java/com/OfficeManagement/OfficeProject/services/DepartmentServiceImpl.java
+package com.OfficeManagement.OfficeProject.services;
 
 import com.OfficeManagement.OfficeProject.dtos.DepartmentDTO;
 import com.OfficeManagement.OfficeProject.models.Department;
 import com.OfficeManagement.OfficeProject.models.Employee;
 import com.OfficeManagement.OfficeProject.repository.DepartmentRepository;
-import com.OfficeManagement.OfficeProject.services.DepartmentService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,11 +22,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     private DepartmentDTO convertToDTO(Department department) {
         if (department == null) return null;
 
-        List<String> employeeNames = department.getEmployees() != null
-                ? department.getEmployees().stream()
-                .map(Employee::getName)
-                .collect(Collectors.toList())
-                : null;
+        List<String> employeeNames = new ArrayList<>();
+        if (department.getEmployees() != null) {
+            employeeNames = department.getEmployees().stream()
+                    .map(Employee::getName)
+                    .filter(name -> name != null && !name.trim().isEmpty())
+                    .collect(Collectors.toList());
+        }
 
         DepartmentDTO dto = new DepartmentDTO();
         dto.setId(department.getId());
@@ -40,12 +43,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     private Department convertToEntity(DepartmentDTO departmentDTO) {
+        if (departmentDTO == null) return null;
+
         Department department = new Department();
         department.setId(departmentDTO.getId());
         department.setDeptId(departmentDTO.getDeptId());
         department.setName(departmentDTO.getName());
         department.setDescription(departmentDTO.getDescription());
         department.setCreatedBy(departmentDTO.getCreatedBy());
+        // Don't set createdDate here - let auditing handle it
 
         return department;
     }
@@ -56,9 +62,10 @@ public class DepartmentServiceImpl implements DepartmentService {
             int maxNumber = 0;
 
             for (Department dept : departments) {
-                if (dept.getDeptId() != null && dept.getDeptId().startsWith("dept-")) {
+                if (dept.getDeptId() != null && dept.getDeptId().toLowerCase().startsWith("dept-")) {
                     try {
-                        int num = Integer.parseInt(dept.getDeptId().substring(5));
+                        String numberPart = dept.getDeptId().substring(5).trim();
+                        int num = Integer.parseInt(numberPart);
                         if (num > maxNumber) maxNumber = num;
                     } catch (NumberFormatException e) {
                         // Skip invalid formats
@@ -67,17 +74,15 @@ public class DepartmentServiceImpl implements DepartmentService {
             }
 
             return String.format("Dept-%03d", maxNumber + 1);
-
         } catch (Exception e) {
             return "Dept-001";
         }
     }
 
-
     @Override
     public DepartmentDTO saveDepartment(DepartmentDTO departmentDTO) {
         if (departmentDTO.getCreatedBy() == null || departmentDTO.getCreatedBy().trim().isEmpty()) {
-            departmentDTO.setCreatedBy("admin"); // Default value if not provided
+            departmentDTO.setCreatedBy("admin");
         }
 
         if (departmentDTO.getDeptId() == null || departmentDTO.getDeptId().trim().isEmpty()) {
@@ -95,16 +100,14 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department existingDepartment = departmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Department not found with id: " + id));
 
-        if (departmentDTO.getName() != null) {
+        // Only update if provided (allows partial updates)
+        if (departmentDTO.getName() != null && !departmentDTO.getName().trim().isEmpty()) {
             existingDepartment.setName(departmentDTO.getName());
         }
         if (departmentDTO.getDescription() != null) {
             existingDepartment.setDescription(departmentDTO.getDescription());
         }
-
-        existingDepartment.setDeptId(departmentDTO.getDeptId());
-        existingDepartment.setName(departmentDTO.getName());
-        existingDepartment.setDescription(departmentDTO.getDescription());
+        // Don't update deptId in updates typically
 
         Department updated = departmentRepository.save(existingDepartment);
         return convertToDTO(updated);

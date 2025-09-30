@@ -8,11 +8,11 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "employees",
-      uniqueConstraints = {
-              @UniqueConstraint(columnNames = "email"),
-              @UniqueConstraint(columnNames = "phoneNumber"),
-              @UniqueConstraint(columnNames = "empId")
-      }
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email"),
+                @UniqueConstraint(columnNames = "phoneNumber"),
+                @UniqueConstraint(columnNames = "empId")
+        }
 )
 
 public class Employee {
@@ -20,9 +20,6 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "emp_id",unique = true)
-    private String empId;
 
     private String name;
 
@@ -47,8 +44,7 @@ public class Employee {
     @JsonIgnoreProperties("employee")
     private Department department;
 
-    public Employee(String empId ,String email, String name, String phoneNumber, String gender, boolean active, String bloodGroup, LocalDate dateOfBirth, Department department) {
-        this.empId=empId;
+    public Employee(String email, String name, String phoneNumber, String gender, boolean active, String bloodGroup, LocalDate dateOfBirth, Department department) {
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -70,14 +66,6 @@ public class Employee {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getEmpId() {
-        return empId;
-    }
-
-    public void setEmpId(String empId) {
-        this.empId = empId;
     }
 
     public String getName() {

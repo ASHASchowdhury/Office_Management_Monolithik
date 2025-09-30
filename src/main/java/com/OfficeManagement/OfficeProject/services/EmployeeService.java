@@ -1,8 +1,6 @@
 package com.OfficeManagement.OfficeProject.services;
 
 import com.OfficeManagement.OfficeProject.dtos.EmployeeDTO;
-import com.OfficeManagement.OfficeProject.models.Employee;
-
 import java.util.List;
 
 public interface EmployeeService {

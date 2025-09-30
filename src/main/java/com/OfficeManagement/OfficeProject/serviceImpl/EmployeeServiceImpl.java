@@ -27,17 +27,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDTO convertToDTO(Employee employee) {
         DepartmentDTO departmentDTO = null;
         if (employee != null && employee.getDepartment() != null) {
-            Department department =employee.getDepartment();
-
+            Department department = employee.getDepartment();
             departmentDTO = new DepartmentDTO();
-                    departmentDTO.setDeptId(department.getDeptId());
-                    departmentDTO.setName(department.getName());
-                    departmentDTO.setDescription(department.getDescription());
+            departmentDTO.setId(department.getId());
+            departmentDTO.setDeptId(department.getDeptId());
+            departmentDTO.setName(department.getName());
+            departmentDTO.setDescription(department.getDescription());
         }
 
         return new EmployeeDTO(
                 employee.getId(),
-                employee.getEmpId(),
                 employee.getName(),
                 employee.getPhoneNumber(),
                 employee.getEmail(),
@@ -52,7 +51,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     // Convert EmployeeDTO to Employee entity
     private Employee convertToEntity(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
-        employee.setEmpId(employeeDTO.getEmpId());
         employee.setName(employeeDTO.getName());
         employee.setPhoneNumber(employeeDTO.getPhoneNumber());
         employee.setEmail(employeeDTO.getEmail());
@@ -73,34 +71,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
-    private String generateEmpId() {
-        try {
-            Long totalEmployees = employeeRepository.count();
-            System.out.println("Total employees count: " + totalEmployees);
-            return String.format("emp-%03d", totalEmployees + 1);
-        } catch (Exception e) {
-            System.out.println("Error in generateEmpId: " + e.getMessage());
-            return "emp-001";
-        }
-    }
-
-
-
     @Override
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
-
-        // ADD THIS VALIDATION:
+        // Validation
         if (employeeRepository.existsByEmail(employeeDTO.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
         if (employeeRepository.existsByPhoneNumber(employeeDTO.getPhoneNumber())) {
             throw new RuntimeException("Phone number already exists");
-        }
-
-        if (employeeDTO.getEmpId() == null || employeeDTO.getEmpId().trim().isEmpty()) {
-            String generatedEmpId = generateEmpId();
-            employeeDTO.setEmpId(generatedEmpId);
-            System.out.println("Generated empId: " + generatedEmpId);
         }
 
         System.out.println("Creating employee: " + employeeDTO.getName());
@@ -114,7 +92,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee prsntEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-        // ADD THIS VALIDATION (only if email/phone is being changed):
+        // Validation (only if email/phone is being changed)
         if (!prsntEmployee.getEmail().equals(employeeDTO.getEmail()) &&
                 employeeRepository.existsByEmail(employeeDTO.getEmail())) {
             throw new RuntimeException("Email already exists");
@@ -159,7 +137,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDTO getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
-
         return convertToDTO(employee);
     }
 }
