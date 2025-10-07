@@ -27,6 +27,14 @@ public class AuthController {
         }
     }
 
-    // Login is handled by Spring Security Basic Auth
-    // No need for custom login endpoint
+    // CHANGED: Added login endpoint back with proper validation
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) {
+        try {
+            AuthResponseDTO response = authService.login(authRequestDTO);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

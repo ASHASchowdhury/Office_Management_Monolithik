@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,8 +28,9 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/register").permitAll() // Allow registration without auth
+                        .requestMatchers("/auth/login").permitAll()    // CHANGED: Allow login endpoint
+                        .anyRequest().authenticated()                  // All other endpoints need auth
                 )
                 .httpBasic(Customizer.withDefaults());
 
@@ -38,14 +39,16 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        // Create default admin and HR users
-        UserDetails admin = User.withUsername("admin")
-                .password("admin123")
+        // CHANGED: Using password encoder for secure password storage
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password(passwordEncoder().encode("admin123")) // CHANGED: Encoded password
                 .roles("ADMIN")
                 .build();
 
-        UserDetails hr = User.withUsername("hr")
-                .password("hr123")
+        UserDetails hr = User.builder()
+                .username("hr")
+                .password(passwordEncoder().encode("hr123")) // CHANGED: Encoded password
                 .roles("HR")
                 .build();
 
@@ -54,7 +57,8 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        // CHANGED: Using BCrypt for secure password encoding
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
