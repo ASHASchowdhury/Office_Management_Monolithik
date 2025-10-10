@@ -22,6 +22,8 @@ public class DepartmentController {
         return departmentService.saveDepartment(departmentDTO);
     }
 
+
+
     @GetMapping("/{id}")
     public DepartmentDTO getDepartmentById(@PathVariable Long id){
         return departmentService.getDepartmentById(id);

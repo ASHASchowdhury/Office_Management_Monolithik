@@ -1,46 +1,49 @@
 package com.OfficeManagement.OfficeProject.dtos;
 
 public class AuthResponseDTO {
-    private Long id;
-    private String username;
-    private String role;
-    private String message;
-    private boolean success;
-    private EmployeeDTO employeeDTO;
+   private boolean success;
+   private String message;
+   private String username;
+   private String role;
 
-    // Constructors
     public AuthResponseDTO() {}
 
-    public AuthResponseDTO(String message, boolean success) {
-        this.message = message;
+    public AuthResponseDTO(boolean success, String message, String username, String role) {
         this.success = success;
-    }
-
-    public AuthResponseDTO(Long id, String username, String role, String message, boolean success, EmployeeDTO employeeDTO) {
-        this.id = id;
+        this.message = message;
         this.username = username;
         this.role = role;
-        this.message = message;
-        this.success = success;
-        this.employeeDTO = employeeDTO;
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public boolean isSuccess() {
+        return success;
+    }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getMessage() {
+        return message;
+    }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    public boolean isSuccess() { return success; }
-    public void setSuccess(boolean success) { this.success = success; }
+    public String getUsername() {
+        return username;
+    }
 
-    public EmployeeDTO getEmployeeDTO() { return employeeDTO; }
-    public void setEmployeeDTO(EmployeeDTO employeeDTO) { this.employeeDTO = employeeDTO; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

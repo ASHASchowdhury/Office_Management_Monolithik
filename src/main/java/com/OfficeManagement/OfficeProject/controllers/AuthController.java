@@ -2,39 +2,40 @@ package com.OfficeManagement.OfficeProject.controllers;
 
 import com.OfficeManagement.OfficeProject.dtos.AuthRequestDTO;
 import com.OfficeManagement.OfficeProject.dtos.AuthResponseDTO;
-import com.OfficeManagement.OfficeProject.services.AuthService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:3000", "http://10.0.6.1:3000"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000", "http://10.0.6.1:3000"})
 public class AuthController {
 
-    private final AuthService authService;
+    @PostMapping("/login")
+    public AuthResponseDTO login(@RequestBody AuthRequestDTO loginRequest) {
+        System.out.println("Login attempt: " + loginRequest.getUsername());
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody AuthRequestDTO authRequestDTO) {
-        try {
-            AuthResponseDTO response = authService.register(authRequestDTO);
-            return ResponseEntity.ok("User registered successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        // Simple hardcoded validation
+        if (isValidUser(loginRequest.getUsername(), loginRequest.getPassword())) {
+            String role = getUserRole(loginRequest.getUsername());
+            return new AuthResponseDTO(true, "Login successful", loginRequest.getUsername(), role);
+        } else {
+            return new AuthResponseDTO(false, "Invalid credentials", null, null);
         }
     }
 
-    // CHANGED: Added login endpoint back with proper validation
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) {
-        try {
-            AuthResponseDTO response = authService.login(authRequestDTO);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    private boolean isValidUser(String username, String password) {
+        return (username.equals("hr") && password.equals("hr123")) ||
+                (username.equals("director") && password.equals("director123")) ||
+                (username.equals("pm") && password.equals("pm123")) ||
+                (username.equals("cto") && password.equals("cto123"));
+    }
+
+    private String getUserRole(String username) {
+        switch (username) {
+            case "hr": return "HR";
+            case "director": return "DIRECTOR";
+            case "pm": return "PROJECT_MANAGER";
+            case "cto": return "CTO";
+            default: return "USER";
         }
     }
 }
